@@ -1,0 +1,7 @@
+{
+  "name": "mypi",
+  "description": "My Raspberry Pi panel, written in Python + Flask.",
+  "repository": "https://github.com/phamviet/mypi",
+  "website": "https://mypi.org",
+  "keywords": ["mypi", "python", "flask"]
+}
