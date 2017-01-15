@@ -1,0 +1,15 @@
+[Unit]
+Description=mypi-dev service
+After=network.target
+
+[Service]
+Environment=FLASK_APP=mypi/core.py
+Environment=FLASK_DEBUG=1
+Environment="PATH=/home/pi/mypi/venv/bin"
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/mypi
+ExecStart=/home/pi/mypi/venv/bin/flask run --host=0.0.0.0 --with-threads
+
+[Install]
+WantedBy=multi-user.target

@@ -1,10 +1,9 @@
-decorator==3.4.0
 Flask==0.12
-gevent==1.0.2
-greenlet==0.4.2
-gunicorn==19.2
-itsdangerous==0.24
-Jinja2==2.7.2
-MarkupSafe==0.23
-six==1.6.1
+decorator
+gevent
+greenlet
+gunicorn
+itsdangerous
+Jinja2
 Werkzeug==0.9.4
+psutil

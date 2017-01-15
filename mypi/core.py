@@ -7,18 +7,12 @@ This module provides the core HttpBin experience.
 """
 
 import base64
+import importlib
 import json
 import os
-import random
-import time
-import uuid
-import argparse
 
-from flask import Flask, Response, request, render_template, redirect, jsonify as flask_jsonify, make_response, url_for
-from werkzeug.datastructures import WWWAuthenticate, MultiDict
-from werkzeug.http import http_date
+from flask import Flask, Response, request, render_template, jsonify, make_response, url_for
 from werkzeug.wrappers import BaseResponse
-from six.moves import range as xrange
 
 ENV_COOKIES = (
 	'_gauges_unique',
@@ -30,14 +24,6 @@ ENV_COOKIES = (
 	'__utma',
 	'__utmb'
 )
-
-
-def jsonify(*args, **kwargs):
-	response = flask_jsonify(*args, **kwargs)
-	if not response.data.endswith(b'\n'):
-		response.data += b'\n'
-	return response
-
 
 # Prevent WSGI from correcting the casing of the Location header
 BaseResponse.autocorrect_location_header = False
@@ -85,28 +71,58 @@ def set_cors_headers(response):
 
 
 @app.route('/')
-def view_landing_page():
+def index():
 	"""Landing Page."""
+
 	tracking_enabled = False
 	return render_template('index.html', tracking_enabled=tracking_enabled)
 
 
 @app.route('/ip')
-def view_origin():
+def ip():
 	"""Returns Origin IP."""
 
 	return jsonify(origin=request.headers.get('X-Forwarded-For', request.remote_addr))
 
 
-@app.route('/restart')
-def restart():
-	"""Restart device."""
+@app.route('/cmd', methods=['GET', 'POST'])
+def cmd():
+	"""Abstract cmd route."""
+	args = {}
+	if request.method == 'POST':
+		method_string = request.form['cmd']
+		if request.form.get("args"):
+			args = json.loads(request.form.get("args"))
+	else:
+		method_string = request.args.get('cmd')
 
-	return jsonify(cmd="restart")
+	if '.' in method_string:
+		method_string = __name__.split('.')[0]  + '.' + method_string
+		modulename = '.'.join(method_string.split('.')[:-1])
+		methodname = method_string.split('.')[-1]
+
+		attr = getattr(importlib.import_module(modulename), methodname)
+
+	else:
+		attr = globals()[method_string]
+
+	ret = {}
+	try:
+		ret = attr(**args)
+	except Exception as ex:
+		ret["error"] = ex.message
+
+	if ret is None:
+		ret = {}
+
+	if isinstance(ret, str):
+		ret = {
+			"output": ret
+		}
+
+	return jsonify(ret)
 
 
-@app.route('/shutdown')
-def shutdown():
-	"""Shutdown device."""
 
-	return jsonify(cmd="restart")
+
+

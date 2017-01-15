@@ -17,6 +17,15 @@
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
+
+.mdl-progress {
+    height: 20px;
+}
+
+#cpu-info .mdl-progress {
+    margin-bottom: 20px;
+}
+
 .demo-avatar {
   width: 48px;
   height: 48px;
@@ -145,13 +154,6 @@ _:-ms-input-placeholder, :root .demo-graphs {
 }
 _:-ms-input-placeholder, :root .demo-graph {
   max-height: 300px;
-}
-/* TODO end */
-.demo-graph:nth-child(1) {
-  color: #00b9d8;
-}
-.demo-graph:nth-child(2) {
-  color: #d9006e;
 }
 
 .demo-cards {
