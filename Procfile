@@ -1,1 +1,1 @@
-web: gunicorn mypi:app -w 2 --log-file -
+web: gunicorn mypi:app -w 4 --log-file -

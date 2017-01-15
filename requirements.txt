@@ -1,7 +1,5 @@
 Flask==0.12
 decorator
-gevent
-greenlet
 gunicorn
 itsdangerous
 Jinja2
